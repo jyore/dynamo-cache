@@ -1,2 +1,2 @@
 # dynamo-cache
-A Write-Thru Cache for DynamoDB
+A Cache Mechanism for DynamoDB
