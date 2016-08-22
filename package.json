@@ -1,0 +1,35 @@
+{
+  "name": "dynamo-cache",
+  "version": "0.1.0",
+  "description": "A Write-Thru Cache for DynamoDB",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --recursive"
+  },
+  "dependencies": {
+    "winston" : "^2.2.0",
+    "aws-sdk" : "^2.5.0",
+    "redis" : "^2.6.2",
+    "memcached" : "^2.2.2",
+    "underscore" : "^1.8.3"
+  },
+  "devDependencies" : {
+    "mocha": "^2.5.3",
+    "chai": "^3.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jyore/dynamo-cache.git"
+  },
+  "keywords": [
+    "aws",
+    "dynamodb",
+    "cache"
+  ],
+  "author": "Joey Yore",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/jyore/dynamo-cache/issues"
+  },
+  "homepage": "https://github.com/jyore/dynamo-cache#readme"
+}
