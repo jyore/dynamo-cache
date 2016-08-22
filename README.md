@@ -12,24 +12,15 @@ The dynamo-cache module extends the AWS SDK's DocumentClient object directly, al
 The following snippet shows a minimum effort example for adding caching to your application. Let's take for example, the first example from the `GettingStarted` guide, which is retrieving an item from a DynamoDB table.
 
     var AWS = require("aws-sdk");
-    
-    AWS.config.update({
-      region: "us-west-2",
-      endpoint: "http://localhost:8000"
-    });
+    AWS.config.update({region: "us-west-2",});
     
     var docClient = new AWS.DynamoDB.DocumentClient()
     
-    var table = "Movies";
-    
-    var year = 2015;
-    var title = "The Big New Movie";
-    
     var params = {
-        TableName: table,
+        TableName: "Movies",
         Key:{
-            "year": year,
-            "title": title
+            "year": 2015,
+            "title": "The Big New Movie"
         }
     };
     
@@ -63,16 +54,11 @@ This gives us the full program of:
     var docClient = new AWS.DynamoDB.DocumentClient();
     docClient.cacheConfig();
     
-    var table = "Movies";
-    
-    var year = 2015;
-    var title = "The Big New Movie";
-    
     var params = {
-        TableName: table,
+        TableName: "Movies",
         Key:{
-            "year": year,
-            "title": title
+            "year": 2015,
+            "title": "The Big New Movie"
         }
     };
     
