@@ -1,13 +1,12 @@
 {
   "name": "dynamo-cache",
-  "version": "0.1.0",
-  "description": "A Write-Thru Cache for DynamoDB",
+  "version": "0.1.1",
+  "description": "A Write-Around Cache for DynamoDB",
   "main": "index.js",
   "scripts": {
     "test": "mocha --recursive"
   },
   "dependencies": {
-    "winston" : "^2.2.0",
     "aws-sdk" : "^2.5.0",
     "redis" : "^2.6.2",
     "memcached" : "^2.2.2",
@@ -25,7 +24,9 @@
   "keywords": [
     "aws",
     "dynamodb",
-    "cache"
+    "cache",
+    "redis",
+    "memcached"
   ],
   "author": "Joey Yore",
   "license": "GPL-3.0",
