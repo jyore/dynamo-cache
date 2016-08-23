@@ -7,20 +7,18 @@ var _       = require('underscore');
 // ---------------------------------------------
 var logger            = require('./lib/logger');
 var validate          = require('./lib/validate');
+var util              = require('./lib/util');
 var RedisProvider     = require('./lib/redis-provider');
 var MemcachedProvider = require('./lib/memcached-provider');
+var InMemoryProvider  = require('./lib/inmemory-provider');
 
 
 // Constants
 // ---------------------------------------------
-const strategies = {
-  WRITE_THROUGH: 0,
-  WRITE_AROUND:  1
-}
-
 const providers = {
-  REDIS:     0,
-  MEMCACHED: 1
+  IN_MEMORY: 0,
+  REDIS:     1,
+  MEMCACHED: 2
 }
 
 
@@ -29,14 +27,10 @@ const providers = {
 var defaults = {
   debug:          false,
   providerConfig: {
-    provider:     providers.REDIS,
+    provider:     providers.IN_MEMORY,
     args:         []
   },
-  strategy:       strategies.WRITE_THROUGH,
-  ttl:            {
-    refreshOnGet: false,
-    time:         0
-  }
+  ttl: 300
 };
 
 
@@ -54,7 +48,6 @@ AWS.DynamoDB.DocumentClient.prototype.configCache = function(config) {
     createSet:  this.createSet,
     delete:     this.delete,
     get:        this.get,
-    put:        this.put,
     query:      this.query,
     scan:       this.scan,
     update:     this.update
@@ -102,23 +95,44 @@ AWS.DynamoDB.DocumentClient.prototype.configCache = function(config) {
   })();
 
   this.delete = (function() {
-    return function() {
-      throw new Error('dynamo-cache: Method Not Implemented');
-      //function_cache.delete.apply(this,arguments);
+    return function(params,callback) {
+      if(enabled) {
+        var key = util.hash(util.buildKey(params));
+        cache.remove(key);
+      }
+      
+      function_cache.delete(params,callback);
     }
   })();
 
   this.get = (function() {
-    return function() {
-      throw new Error('dynamo-cache: Method Not Implemented');
-      //function_cache.get.apply(this,arguments);
-    }
-  })();
+    return function(params,callback) {
 
-  this.put = (function() {
-    return function() {
-      throw new Error('dynamo-cache: Method Not Implemented');
-      //function_cache.put.apply(this,arguments);
+      if(enabled) {
+
+        if(options.debug) {
+          logger(params);
+        }
+
+        var key = util.hash(util.buildKey(params));
+
+        cache.get(key, function(err,reply) {
+
+          if(err || reply) {
+            callback(err,JSON.parse(reply));
+          } else {
+
+            function_cache.get(params, function(err,data) {
+              if(!err) { 
+                cache.put(key,JSON.stringify(data));
+              }
+              callback(err,data);
+            });
+          }
+        });
+      } else {
+        function_cache.get(params,callback);
+      }
     }
   })();
 
@@ -151,13 +165,15 @@ AWS.DynamoDB.DocumentClient.prototype.configCache = function(config) {
     if(options.debug) {
       logger("Configuring dynamo-cache with options: ", JSON.stringify(options));
     }
-    validate.strategy(options.strategy);
     validate.provider(options.providerConfig);
   }
 
   function init_cache() {
 
     switch (options.providerConfig.provider) {
+      case providers.IN_MEMORY:
+        cache = new InMemoryProvider(options.providerConfig,options.ttl);
+        break;
       case providers.REDIS:
         cache = new RedisProvider(options.providerConfig,options.ttl);
         break;
@@ -179,6 +195,5 @@ AWS.DynamoDB.DocumentClient.prototype.configCache = function(config) {
 // Module Exports
 // ---------------------------------------------
 module.exports = {
-  strategies: strategies,
   providers: providers
 }
