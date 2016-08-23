@@ -8,6 +8,10 @@ This module allows you to quickly and easily add a caching layer (in-memory, red
 
 This module aims to allow adding the cache layer **WITHOUT** having to modify exiting business logic. Simply requiring the module and calling the `cacheConfig` method is all that is required to start caching!
 
+> **NOTE**: The current implementation only implements a *Write-Around* Caching Strategy. This means that on write, the cache is skipped and the data is written only to the DynamoDB table. When the data is subsequently read, it will be cached for the specified TTL *(default: 300s)*. 
+>
+> This is a design decision in order to avoid modification of the AWS SDK calls, as the PUT commands do not have an inherit way of identifying the hash and/or sort key. In the future, this module will hopefully support *Write-Through* and *Write-Around* strategies.
+
 
 ### Minimal Example 
 
