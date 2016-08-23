@@ -39,7 +39,7 @@ AWSMOCK.mock('DynamoDB.DocumentClient', 'delete', function(params, callback) {
 // Setup
 var docClient = new AWS.DynamoDB.DocumentClient();
 docClient.configCache({
- ttl: 1,
+ ttl: 0.2,
 });
 
 
@@ -76,6 +76,18 @@ describe('dynamo-cache', function() {
         });
       }); 
     });
+
+    it('should retrieve updated values after key expires', function(done) {
+      this.slow(500);
+
+      setTimeout(function() {
+        docClient.get({ TableName: 'Tests', Key: { HashKey: 'Test1' }}, function(err,data) {
+          expect(data.Item.Param1).to.equal(datastore['Tests']['Test1']['Param1']);
+          done(); 
+        });
+      },200);
+    });
+
   });
 
   // This test retrieves a known item to make sure it is in the datastore and cache
@@ -95,4 +107,5 @@ describe('dynamo-cache', function() {
       });
     });
   });
+
 });
