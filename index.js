@@ -41,6 +41,7 @@ AWS.DynamoDB.DocumentClient.prototype.configCache = function(config) {
   var cache   = undefined;
   var options = _.extend({},defaults,config);
   var enabled = true;
+  var self    = this;
 
   var function_cache = {
     delete:     this.delete,
@@ -97,7 +98,7 @@ AWS.DynamoDB.DocumentClient.prototype.configCache = function(config) {
             callback(err,JSON.parse(reply));
           } else {
 
-            function_cache.get(params, function(err,data) {
+            function_cache.get.call(self, params, function(err,data) {
               if(!err) { 
                 cache.put(key,JSON.stringify(data));
               }
@@ -128,7 +129,7 @@ AWS.DynamoDB.DocumentClient.prototype.configCache = function(config) {
             callback(err,JSON.parse(reply));
           } else {
 
-            function_cache.get(params, function(err,data) {
+            function_cache.query.call(self, params, function(err,data) {
               if(!err) { 
                 cache.put(key,JSON.stringify(data));
               }
@@ -159,7 +160,7 @@ AWS.DynamoDB.DocumentClient.prototype.configCache = function(config) {
             callback(err,JSON.parse(reply));
           } else {
 
-            function_cache.get(params, function(err,data) {
+            function_cache.scan.call(self, params, function(err,data) {
               if(!err) { 
                 cache.put(key,JSON.stringify(data));
               }
