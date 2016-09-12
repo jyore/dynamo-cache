@@ -25,7 +25,7 @@ This example shows the minimal work needed to add a cache to your DynamoDB clien
     var docClient = new AWS.DynamoDB.DocumentClient();
 
     // Setup the cache
-    docClient.cacheConfig();
+    docClient.configCache();
 
 
 Your application will now use an in-memory cache!
