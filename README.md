@@ -1,5 +1,9 @@
 # dynamo-cache
 
+## NOTICE
+This project is no longer maintained or being developed. You should just use the AWS native cache front the DynamoDB, DAX. See https://aws.amazon.com/dynamodb/dax/ for more details, but it will handle all the caching on the AWS side, by simply setting it up. All application API calls will remain the same and I do not believe there is any application work needed at all.
+
+
 An easy to apply caching mechanism for DynamoDB, written in Node.
 
 ## Introduction
